@@ -1,4 +1,4 @@
-from .models import Product, Category, Cart, CartItem
+from .models import Product, Category, Cart, CartItem, Comment, Order, OrderItem
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
@@ -72,7 +72,25 @@ def product_list(request):
 
 def product_detail(request, id):
     product = get_object_or_404(Product, id=id)
-    return render(request, 'products/product_detail.html', {'product': product})
+    comments = product.comments.select_related('user').order_by('-created_at')
+
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        content = request.POST.get('content')
+        if content:
+            Comment.objects.create(
+                product=product,
+                user=request.user,
+                content=content
+            )
+        return redirect('product_detail', id=product.id)
+
+    return render(request, 'products/product_detail.html', {
+        'product': product,
+        'comments': comments
+    })
 
 def category_list(request):
     categories = Category.objects.all()
@@ -88,3 +106,47 @@ def category_detail(request, id):
 
 def home(request):
     return render(request, 'home.html')
+
+@login_required
+def checkout(request):
+    cart = get_or_create_cart(request.user)
+    cart_items = cart.items.select_related('product').all()
+    total = cart.get_total()
+
+    if not cart_items:
+        return redirect('cart')
+
+    if request.method == 'POST':
+        payment_method = request.POST.get('payment_method')
+
+        order = Order.objects.create(
+            user=request.user,
+            total=total,
+            payment_method=payment_method,
+            status='paid'
+        )
+
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product_name=item.product.name,
+                price=item.product.price,
+                quantity=item.quantity
+            )
+
+        cart_items.delete()
+
+        return redirect('payment_success', order_id=order.id)
+
+    return render(request, 'products/checkout.html', {
+        'cart_items': cart_items,
+        'total': total
+    })
+
+
+@login_required
+def payment_success(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'products/payment_success.html', {
+        'order': order
+    })

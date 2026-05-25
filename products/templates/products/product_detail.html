@@ -1,16 +1,56 @@
 {% extends 'layout.html' %}
 
-{% block title %}Détail du produit {% endblock %}
+{% block title %}Détail du produit{% endblock %}
 
 {% block content %}
-    <h3>{{ product.name }}</h3>
+<div class="container mt-4">
 
-    {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="250">
-    {% endif %}
+    <div class="card p-4 shadow-sm">
+        <h2>{{ product.name }}</h2>
 
-    <h3>{{ product.price }}</h3>
-    <h3>{{ product.description }}</h3>
-    <a href="{% url 'product_list' %}">Retour</a>
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="250" class="mb-3">
+        {% endif %}
+
+        <h4>{{ product.price }} DH</h4>
+        <p>{{ product.description }}</p>
+
+        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success">
+            Ajouter au panier
+        </a>
+
+        <a href="{% url 'product_list' %}" class="btn btn-secondary">
+            Retour
+        </a>
+    </div>
+
+    <div class="card p-4 mt-4 shadow-sm">
+        <h4>Commentaires</h4>
+
+        {% if user.is_authenticated %}
+        <form method="post" class="mb-4">
+            {% csrf_token %}
+            <textarea name="content" class="form-control" rows="3" placeholder="Laissez votre commentaire..." required></textarea>
+            <button type="submit" class="btn btn-primary mt-2">
+                Publier
+            </button>
+        </form>
+        {% else %}
+        <p>
+            <a href="{% url 'login' %}">Connectez-vous</a> pour laisser un commentaire.
+        </p>
+        {% endif %}
+
+        {% for comment in comments %}
+        <div class="border rounded p-3 mb-2">
+            <strong>{{ comment.user.username }}</strong>
+            <small class="text-muted">— {{ comment.created_at|date:"d/m/Y H:i" }}</small>
+            <p class="mb-0">{{ comment.content }}</p>
+        </div>
+        {% empty %}
+        <p>Aucun commentaire pour ce produit.</p>
+        {% endfor %}
+    </div>
+
+</div>
 {% endblock %}
-
