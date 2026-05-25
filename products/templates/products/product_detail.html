@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block title %}Détail du produit {% endblock %}
+
+{% block content %}
+    <h3>{{ product.name }}</h3>
+
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="250">
+    {% endif %}
+
+    <h3>{{ product.price }}</h3>
+    <h3>{{ product.description }}</h3>
+    <a href="{% url 'product_list' %}">Retour</a>
+{% endblock %}
+

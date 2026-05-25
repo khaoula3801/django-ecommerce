@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<div class="home-wrapper">
+    <section class="hero-section">
+        <h1 class="hero-title">Bienvenue sur E-Shop</h1>
+        <p class="hero-text">
+            Trouvez facilement vos smartphones, ordinateurs et accessoires au meilleur choix, 
+            avec une navigation simple, un panier clair et une expérience d’achat rapide et moderne.
+        </p>
+        <a href="{% url 'product_list' %}" class="btn-pastel-primary">Voir les produits</a>
+        <a href="{% url 'cart' %}" class="btn-pastel-secondary">Voir mon panier</a>
+    </section>
+
+    <h2 class="section-title">Pourquoi choisir notre boutique ?</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">🛍️</div>
+                <h4>Produits variés</h4>
+                <p>Une sélection de produits utiles et tendance pour répondre à vos besoins.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">💳</div>
+                <h4>Achat facile</h4>
+                <p>Ajoutez au panier, consultez votre commande et achetez en quelques clics.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">👤</div>
+                <h4>Espace personnel</h4>
+                <p>Gérez votre profil et profitez d’une navigation claire.</p>
+            </div>
+        </div>
+    </div>
+
+    <section class="categories-section">
+        <h2 class="section-title">Nos catégories</h2>
+        <div class="row g-4">
+            <div class="col-md-4"><div class="category-box"><h5>Électronique</h5><p>Ordinateurs, accessoires et appareils modernes.</p></div></div>
+            <div class="col-md-4"><div class="category-box"><h5>Accessoires</h5><p>Des articles pratiques pour accompagner vos besoins.</p></div></div>
+            <div class="col-md-4"><div class="category-box"><h5>Nouveautés</h5><p>Découvrez les derniers produits ajoutés.</p></div></div>
+        </div>
+    </section>
+
+    <div class="bottom-cta">
+        <h3>Prêt à commencer vos achats ?</h3>
+        <p>Explorez notre collection et trouvez les produits qui vous correspondent.</p>
+        <a href="{% url 'product_list' %}" class="btn-pastel-primary">Commencer</a>
+    </div>
+</div>
+{% endblock %}
