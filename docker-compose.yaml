@@ -1,7 +1,6 @@
 services:
   db:
     image: mysql:8.0
-    container_name: mysql-db
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -20,22 +19,15 @@ services:
 
   web:
     build: .
-    container_name: django-app
     restart: unless-stopped
     env_file:
       - .env
-    environment:
-      USE_MYSQL: "1"
-      MYSQL_HOST: db
-      MYSQL_PORT: 3306
+    command: python manage.py runserver 0.0.0.0:8004
     ports:
       - "8004:8004"
-    volumes:
-      - .:/app
     depends_on:
       db:
         condition: service_healthy
-    command: python manage.py runserver 0.0.0.0:8004
 
 volumes:
   db_data:
